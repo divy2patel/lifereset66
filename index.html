@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LifeReset66 - A premium, gamified 66-day habit tracker. Build discipline, earn XP, level up, and unlock motivational cards with a dark RPG theme.">
+  <meta name="theme-color" content="#0a0e1a">
+  <title>LifeReset66 — Gamified Habit Tracker & 66-Day Challenge</title>
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <style>
+    /* Inline helper styles to perfect the Home & Profile dashboard spacing */
+    .home-hero-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .home-hero-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .home-hero-info {
+      flex: 1;
+    }
+    .home-greeting {
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .home-username {
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .home-stats-card {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(139, 92, 246, 0.05));
+    }
+    .home-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      text-align: center;
+      margin-top: 0.75rem;
+    }
+    .home-stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .home-stat-val {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: var(--fs-lg);
+    }
+    .home-stat-lbl {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .home-day-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(239, 68, 68, 0.05));
+      border-left: 3px solid var(--accent-fire);
+    }
+    .home-day-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .home-day-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: var(--fs-xl);
+      color: var(--text-primary);
+    }
+    .home-day-desc {
+      font-size: var(--fs-xs);
+      color: var(--text-secondary);
+    }
+    .settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: var(--border-glass);
+    }
+    .settings-label-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .settings-title {
+      font-weight: 600;
+      font-size: var(--fs-sm);
+    }
+    .settings-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    /* Simple Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--text-muted);
+      border-radius: 24px;
+      transition: .3s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: var(--text-secondary);
+      border-radius: 50%;
+      transition: .3s;
+    }
+    input:checked + .slider {
+      background: var(--gradient-main);
+      border-color: transparent;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+      background-color: #fff;
+    }
+    
+    /* Extra styling for quest list on home page */
+    .quests-card-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    
+    .qm-btn-link {
+      font-size: var(--fs-xs);
+      color: var(--accent-cyan);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .qm-btn-link:hover {
+      text-decoration: underline;
+    }
+    
+    /* Styles for modal data transfer */
+    .data-text-area {
+      width: 100%;
+      height: 120px;
+      font-family: monospace;
+      font-size: var(--fs-xs);
+      margin-bottom: 1rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Wrapper Shell -->
+  <div class="app-container">
+    
+    <!-- 1. PAGE: HOME / DASHBOARD -->
+    <div class="page active" id="page-home">
+      <div class="page-content flex-col gap-md">
+        
+        <!-- Hero Section Card -->
+        <header class="card home-hero-card" id="home-hero-card">
+          <div class="home-hero-header">
+            <div class="level-badge lg level-badge-glow" id="home-level-badge">1</div>
+            <div class="home-hero-info">
+              <span class="home-greeting" id="home-greeting">Good Morning</span>
+              <h1 class="home-username" id="home-username">Warrior</h1>
+            </div>
+          </div>
+          <div id="home-xp-container">
+            <!-- Rendered by XP.renderXPBar -->
+          </div>
+        </header>
+        
+        <!-- Day & Streak Status Card -->
+        <section class="card home-day-card" id="home-day-card">
+          <div class="home-day-info">
+            <span class="home-day-title" id="home-day-title">Day 1 of 66</span>
+            <span class="home-day-desc" id="home-day-desc">Keep pushing to forge unbreakable habits!</span>
+          </div>
+          <div id="home-streak-container">
+            <!-- Rendered by Streaks.renderStreakBadge -->
+          </div>
+        </section>
+        
+        <!-- Stats Card -->
+        <section class="card home-stats-card">
+          <div class="card-title">Quest Stats</div>
+          <div class="home-stats-row">
+            <div class="home-stat-item">
+              <span class="home-stat-val text-gold" id="home-stat-xp">0</span>
+              <span class="home-stat-lbl">Total XP</span>
+            </div>
+            <div class="home-stat-item">
+              <span class="home-stat-val text-gradient" id="home-stat-completed">0</span>
+              <span class="home-stat-lbl">Quests Done</span>
+            </div>
+            <div class="home-stat-item">
+              <span class="home-stat-val text-fire" id="home-stat-streak">0</span>
+              <span class="home-stat-lbl">Max Streak</span>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Quests Summary Panel -->
+        <section class="card home-quests-card">
+          <div class="quests-card-title-row">
+            <h2 class="card-title">Today's Quests</h2>
+            <button class="qm-btn-link" id="home-manage-quests-btn">Manage ⚔️</button>
+          </div>
+          <div class="quest-list-container" id="home-quests-list">
+            <!-- Rendered by Quests.renderQuestList -->
+          </div>
+        </section>
+        
+        <!-- Daily Wisdom Quote Card -->
+        <section class="card home-quote-card">
+          <div class="quests-card-title-row">
+            <h2 class="card-title">Daily Wisdom</h2>
+            <button class="qm-btn-link" id="home-browse-cards-btn">Deck 🛡️</button>
+          </div>
+          <div id="home-quote-container">
+            <!-- Rendered by Cards.renderDailyCard -->
+          </div>
+        </section>
+        
+        <!-- Quick Action Grid -->
+        <section class="flex gap-sm">
+          <button class="btn btn-primary btn-block" id="home-quick-timer-btn" style="padding: 0.9rem;">
+            ⏱️ Start Focus Session (+10 XP)
+          </button>
+        </section>
+        
+      </div>
+    </div>
+    
+    <!-- 2. PAGE: QUESTS MANAGEMENT -->
+    <div class="page" id="page-quests">
+      <div class="page-content">
+        <!-- Rendered by Quests.renderQuestsPage -->
+      </div>
+    </div>
+    
+    <!-- 3. PAGE: PROGRESS TRACKER (66-Day Grid) -->
+    <div class="page" id="page-progress">
+      <div class="page-content flex-col gap-md">
+        <!-- Rendered by Streaks.renderProgressPage -->
+      </div>
+    </div>
+    
+    <!-- 4. PAGE: FOCUS TIMER -->
+    <div class="page" id="page-timer">
+      <div class="page-content">
+        <!-- Rendered by Timer.renderTimerPage -->
+      </div>
+    </div>
+    
+    <!-- 5. PAGE: USER PROFILE & SETTINGS -->
+    <div class="page" id="page-profile">
+      <div class="page-content flex-col gap-md">
+        
+        <!-- Profile Header -->
+        <header class="card profile-header-card">
+          <div class="profile-header">
+            <div class="profile-avatar" id="profile-avatar-display">🧑</div>
+            <h1 class="profile-name" id="profile-name-display">Warrior</h1>
+            <div class="profile-title" id="profile-level-title-display">Novice Warrior</div>
+          </div>
+        </header>
+        
+        <!-- Core Stats Summary -->
+        <section class="stats-grid" id="profile-stats-grid">
+          <div class="stat-card">
+            <span class="stat-value text-fire" id="profile-stat-streak-curr">0</span>
+            <span class="stat-label">Current Streak</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value text-gold" id="profile-stat-level">1</span>
+            <span class="stat-label">Level</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value text-gradient" id="profile-stat-timer-sessions">0</span>
+            <span class="stat-label">Focus Sessions</span>
+          </div>
+        </section>
+        
+        <!-- Game Mode / Preferences Settings -->
+        <section class="card profile-settings-card">
+          <h2 class="card-title">Settings</h2>
+          <div class="settings-group">
+            
+            <!-- Hard Mode Switch -->
+            <div class="settings-row">
+              <div class="settings-label-group">
+                <span class="settings-title">Hard Mode 🔥</span>
+                <span class="settings-desc">1.5x XP, but missing daily quests resets streaks.</span>
+              </div>
+              <label class="switch" id="profile-hardmode-switch-container">
+                <input type="checkbox" id="profile-hardmode-checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <!-- Reminders Switch -->
+            <div class="settings-row">
+              <div class="settings-label-group">
+                <span class="settings-title">Daily Reminders 🔔</span>
+                <span class="settings-desc">Receive browser notifications for quest check-ins.</span>
+              </div>
+              <label class="switch" id="profile-reminders-switch-container">
+                <input type="checkbox" id="profile-reminders-checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+          </div>
+        </section>
+        
+        <!-- Data Management Options -->
+        <section class="card profile-data-card">
+          <h2 class="card-title">Backup & Restore</h2>
+          <div class="flex-col gap-sm mt-2">
+            <button class="btn btn-secondary btn-block" id="profile-btn-export">📤 Export Save File</button>
+            <button class="btn btn-secondary btn-block" id="profile-btn-import">📥 Import Save File</button>
+            <button class="btn btn-danger btn-block mt-3" id="profile-btn-reset">💀 Reset All Progress</button>
+          </div>
+        </section>
+        
+      </div>
+    </div>
+    
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <button class="nav-item active" data-page="page-home" id="nav-home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </button>
+      <button class="nav-item" data-page="page-quests" id="nav-quests">
+        <span class="nav-icon">⚔️</span>
+        <span class="nav-label">Quests</span>
+      </button>
+      <button class="nav-item" data-page="page-progress" id="nav-progress">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Progress</span>
+      </button>
+      <button class="nav-item" data-page="page-timer" id="nav-timer">
+        <span class="nav-icon">⏱️</span>
+        <span class="nav-label">Timer</span>
+      </button>
+      <button class="nav-item" data-page="page-profile" id="nav-profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </button>
+    </nav>
+    
+  </div>
+
+  <!-- Load Modules in dependency order -->
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/xp.js"></script>
+  <script src="js/streaks.js"></script>
+  <script src="js/quests.js"></script>
+  <script src="js/cards.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/onboarding.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
