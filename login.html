@@ -543,17 +543,20 @@
       btn.disabled = true;
 
       setTimeout(() => {
-        btn.classList.remove('loading');
-        btn.disabled = false;
-        showToast('⚔️ Welcome back, Warrior!', 'success');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1200);
-      }, 1600);
+  btn.classList.remove('loading');
+  btn.disabled = false;
+  // Save login state
+  localStorage.setItem('lifereset_user', email);
+  showToast('⚔️ Welcome back, Warrior!', 'success');
+  setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+}, 1600);
     }
 
     function guestLogin() {
-      showToast('⚡ Entering as Guest Warrior…', 'success');
-      setTimeout(() => { window.location.href = 'index.html'; }, 1200);
-    }
+  localStorage.setItem('lifereset_user', 'guest');
+  showToast('⚡ Entering as Guest Warrior…', 'success');
+  setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+}
 
     /* ── Enter key submit ── */
     document.getElementById('password').addEventListener('keydown', e => {
