@@ -1,0 +1,6 @@
+# Ignore local Firebase configuration
+js/firebase-config.local.js
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db

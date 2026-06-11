@@ -14,15 +14,26 @@ import {
   setDoc
 } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAdDFlSf8szCLm-cFdPhOd56L90mqzBsi8",
-  authDomain: "lifereset66.firebaseapp.com",
-  projectId: "lifereset66",
-  storageBucket: "lifereset66.firebasestorage.app",
-  messagingSenderId: "903314251533",
-  appId: "1:903314251533:web:824e5ebb907adf6f249a44",
-  measurementId: "G-RWJTG8706C"
-};
+let firebaseConfig = null;
+
+try {
+  const localConfig = await import('./firebase-config.local.js');
+  firebaseConfig = localConfig.firebaseConfig;
+} catch (err) {
+  console.warn('[Firebase Config] firebase-config.local.js not found. Please create js/firebase-config.local.js from js/firebase-config.example.js');
+}
+
+if (!firebaseConfig) {
+  firebaseConfig = {
+    apiKey: '<YOUR_API_KEY>',
+    authDomain: '<YOUR_AUTH_DOMAIN>',
+    projectId: '<YOUR_PROJECT_ID>',
+    storageBucket: '<YOUR_STORAGE_BUCKET>',
+    messagingSenderId: '<YOUR_MESSAGING_SENDER_ID>',
+    appId: '<YOUR_APP_ID>',
+    measurementId: '<YOUR_MEASUREMENT_ID>'
+  };
+}
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
