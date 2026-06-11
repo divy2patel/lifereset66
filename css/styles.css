@@ -4,7 +4,7 @@
    ============================================ */
 
 /* ====== GOOGLE FONTS ====== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap');
 
 /* ====== CSS CUSTOM PROPERTIES ====== */
 :root {
@@ -12,7 +12,13 @@
   --bg-primary: #0a0e1a;
   --bg-secondary: #111827;
   --bg-tertiary: #1e293b;
-  --bg-glass: rgba(17, 24, 39, 0.7);
+  --bg-glass: rgba(10, 14, 30, 0.82);
+  --bg-glass-nav: rgba(10, 14, 30, 0.92);
+
+  /* RPG gold accents (matches login) */
+  --accent-gold-rpg: #c9a84c;
+  --accent-gold-light: #f0c860;
+  --border-gold: rgba(201, 168, 76, 0.2);
 
   /* Accents */
   --accent-cyan: #06b6d4;
@@ -87,6 +93,61 @@ body {
   overflow-x: hidden;
 }
 
+/* Atmospheric background (matches login.html) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(10, 14, 26, 0.85) 0%,
+      rgba(10, 14, 26, 0.6) 45%,
+      rgba(10, 14, 26, 0.92) 100%
+    ),
+    url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1400&q=80')
+    center / cover no-repeat;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0%, rgba(201, 168, 76, 0.1) 0%, transparent 55%);
+}
+
+/* Ember particles layer */
+.bg-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ember-particle {
+  position: absolute;
+  bottom: -10px;
+  left: var(--x);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--accent-gold-light);
+  opacity: 0;
+  animation: ember-rise var(--dur) ease-in infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes ember-rise {
+  0%   { transform: translateY(0); opacity: 0; }
+  15%  { opacity: 0.55; }
+  80%  { opacity: 0.15; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
+
 /* Hide scrollbar */
 body::-webkit-scrollbar {
   display: none;
@@ -145,6 +206,7 @@ input, textarea {
   width: 100%;
   min-height: 100vh;
   position: relative;
+  z-index: 1;
   overflow: hidden;
 }
 
@@ -182,10 +244,10 @@ input, textarea {
   justify-content: space-around;
   align-items: center;
   height: 64px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-top: var(--border-glass);
+  background: var(--bg-glass-nav);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-gold);
   z-index: 1000;
   padding: 0 0.5rem;
 }
@@ -255,9 +317,9 @@ input, textarea {
 /* ====== GLASS CARDS ====== */
 .card {
   background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: var(--border-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-gold);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 1.25rem;
@@ -277,8 +339,11 @@ input, textarea {
 }
 
 .card-title {
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: var(--fs-lg);
+  letter-spacing: 0.04em;
+  color: var(--accent-gold-rpg);
 }
 
 /* ====== BUTTONS ====== */
@@ -452,9 +517,9 @@ input, textarea {
 /* ====== QUEST CARDS ====== */
 .quest-card {
   background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: var(--border-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-gold);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 1rem 1.25rem;
@@ -1008,9 +1073,9 @@ input, textarea {
 
 .stat-card {
   background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: var(--border-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-gold);
   border-radius: var(--radius-lg);
   padding: 1rem;
   text-align: center;
