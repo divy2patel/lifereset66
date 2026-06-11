@@ -9,43 +9,63 @@
 
   // ====== INITIALIZATION ======
   document.addEventListener('DOMContentLoaded', () => {
-    // Initialize the store
-    Store.init();
-
-    // Bind bottom navigation tabs
-    const navItems = document.querySelectorAll('.nav-bar .nav-item');
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const pageId = item.getAttribute('data-page');
-        if (pageId) {
-          // Prevent navigating away if onboarding is active
-          const user = Store.getUser();
-          if (!user.onboardingComplete) {
-            UI.showToast('Please complete onboarding first!', 'error');
-            return;
+    const bindNavigation = () => {
+      const navItems = document.querySelectorAll('.nav-bar .nav-item');
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const pageId = item.getAttribute('data-page');
+          if (pageId) {
+            const user = Store.getUser();
+            if (!user.onboardingComplete) {
+              UI.showToast('Please complete onboarding first!', 'error');
+              return;
+            }
+            UI.showPage(pageId);
+            renderActivePage(pageId);
           }
-          UI.showPage(pageId);
-          renderActivePage(pageId);
-        }
+        });
       });
-    });
+    };
 
-    // Check if onboarding is complete
-    const user = Store.getUser();
-    if (!user.onboardingComplete) {
-      // Show first step of onboarding
-      Onboarding.start();
+    const startApp = () => {
+      bindNavigation();
+      const user = Store.getUser();
+      if (!user.onboardingComplete) {
+        Onboarding.start();
+      } else {
+        checkDailyStatus();
+        UI.showPage('page-home');
+        renderActivePage('page-home');
+      }
+      bindHomeButtons();
+    };
+
+    const initializeWithFirebase = async (authUser) => {
+      Store.setFirebaseUserId(authUser.uid);
+      Store.init();
+      try {
+        const remote = await Firebase.loadUserData(authUser.uid);
+        if (remote) {
+          Store.mergeRemoteData(remote);
+        } else {
+          Store.save();
+        }
+      } catch (err) {
+        console.error('[Firebase] Load user data failed:', err);
+        Store.save();
+      }
+      startApp();
+    };
+
+    if (window.Firebase && Firebase.onAuthStateChanged) {
+      Firebase.onAuthStateChanged(user => {
+        if (!user) return;
+        initializeWithFirebase(user);
+      });
     } else {
-      // Evaluate catch-up of missed days first
-      checkDailyStatus();
-      
-      // Default to Home page
-      UI.showPage('page-home');
-      renderActivePage('page-home');
+      Store.init();
+      startApp();
     }
-
-    // Bind Home Page specific buttons
-    bindHomeButtons();
   });
 
   /**

@@ -40,6 +40,7 @@
 
     /** @type {ReturnType<typeof getDefaults>} */
     data: null,
+    firebaseUid: null,
 
     // ====== INITIALIZATION ======
 
@@ -61,12 +62,18 @@
       this.save();
     },
 
-    /** Persist current state to localStorage */
+    /** Persist current state to localStorage and Firebase when available */
     save() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
       } catch (err) {
         console.error('[Store] Failed to save:', err);
+      }
+
+      if (this.firebaseUid && window.Firebase && window.Firebase.saveAppData) {
+        window.Firebase.saveAppData(this.firebaseUid, this.data).catch(function (err) {
+          console.warn('[Store] Firebase save failed:', err);
+        });
       }
     },
 
@@ -87,6 +94,24 @@
     /** Merge partial updates into the user object and persist */
     updateUser(updates) {
       Object.assign(this.data.user, updates);
+      this.save();
+    },
+
+    /** Set the Firebase user id for remote sync */
+    setFirebaseUserId(uid) {
+      this.firebaseUid = uid;
+    },
+
+    /** Merge remote Firestore data into the local store */
+    mergeRemoteData(remoteDoc) {
+      if (!remoteDoc) return;
+      const remoteAppData = remoteDoc.appData || remoteDoc;
+      if (remoteAppData && typeof remoteAppData === 'object') {
+        this.data = this._deepMerge(getDefaults(), remoteAppData);
+      }
+      if (remoteDoc.profile && typeof remoteDoc.profile === 'object') {
+        this.data.user = this._deepMerge(this.data.user, remoteDoc.profile);
+      }
       this.save();
     },
 

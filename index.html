@@ -399,6 +399,9 @@
     
   </div>
 
+  <!-- Firebase initialization -->
+  <script type="module" src="js/firebase-config.js"></script>
+
   <!-- Load Modules in dependency order -->
   <script src="js/store.js"></script>
   <script src="js/ui.js"></script>
@@ -425,6 +428,14 @@
         container.appendChild(p);
       }
     })();
+
+    if (window.Firebase && Firebase.onAuthStateChanged) {
+      Firebase.onAuthStateChanged(user => {
+        if (!user) {
+          window.location.href = 'login.html';
+        }
+      });
+    }
   </script>
 
 </body>

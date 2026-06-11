@@ -461,18 +461,8 @@
         <a href="index.html">← Back to Camp</a>
       </div>
 
-      <div class="divider">
-        <span></span>
-        <p>or continue as</p>
-        <span></span>
-      </div>
-
-      <button class="btn-enter" style="background:rgba(255,255,255,0.05);color:var(--text-primary);font-family:'Rajdhani',sans-serif;font-size:0.9rem;letter-spacing:0.1em;font-weight:600;border:1px solid var(--border-gold);" onclick="guestLogin()">
-        ⚔️ &nbsp;Enter as Guest Warrior
-      </button>
-
       <div class="register-link">
-        New to the realm? <a href="#">Create Your Legend</a>
+        New to the realm? <a href="signup.html">Create Your Legend</a>
       </div>
     </div>
 
@@ -482,6 +472,7 @@
   <!-- Toast notification -->
   <div class="toast" id="toast"></div>
 
+  <script type="module" src="js/firebase-config.js"></script>
   <script>
     /* ── Particles ── */
     const pc = document.getElementById('particles');
@@ -495,29 +486,42 @@
       pc.appendChild(p);
     }
 
-    /* ── Password toggle ── */
-    const pwInput = document.getElementById('password');
-    document.getElementById('pw-toggle').addEventListener('click', () => {
-      const isText = pwInput.type === 'text';
-      pwInput.type = isText ? 'password' : 'text';
-      document.getElementById('pw-toggle').textContent = isText ? '👁' : '🙈';
-    });
+    /* ── Page init ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      const pwInput = document.getElementById('password');
+      document.getElementById('pw-toggle').addEventListener('click', () => {
+        const isText = pwInput.type === 'text';
+        pwInput.type = isText ? 'password' : 'text';
+        document.getElementById('pw-toggle').textContent = isText ? '👁' : '🙈';
+      });
 
-    /* ── Avatar upload ── */
-    document.getElementById('avatar-btn').addEventListener('click', () => {
-      document.getElementById('avatar-input').click();
-    });
-    document.getElementById('avatar-input').addEventListener('change', function() {
-      const file = this.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = document.getElementById('avatar-preview');
-        img.src = e.target.result;
-        img.style.display = 'block';
-        document.querySelector('.avatar-icon').style.display = 'none';
-      };
-      reader.readAsDataURL(file);
+      document.getElementById('avatar-btn').addEventListener('click', () => {
+        document.getElementById('avatar-input').click();
+      });
+      document.getElementById('avatar-input').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.getElementById('avatar-preview');
+          img.src = e.target.result;
+          img.style.display = 'block';
+          document.querySelector('.avatar-icon').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('password').addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleLogin();
+      });
+
+      if (window.Firebase && Firebase.onAuthStateChanged) {
+        Firebase.onAuthStateChanged(user => {
+          if (user) {
+            window.location.href = 'index.html';
+          }
+        });
+      }
     });
 
     /* ── Toast ── */
@@ -542,21 +546,17 @@
       btn.classList.add('loading');
       btn.disabled = true;
 
-      setTimeout(() => {
-  btn.classList.remove('loading');
-  btn.disabled = false;
-  // Save login state
-  localStorage.setItem('lifereset_user', email);
-  showToast('⚔️ Welcome back, Warrior!', 'success');
-  setTimeout(() => { window.location.href = 'index.html'; }, 1200);
-}, 1600);
+      Firebase.auth.signInWithEmailAndPassword(email, pw)
+        .then(() => {
+          showToast('⚔️ Welcome back, Warrior!', 'success');
+          setTimeout(() => { window.location.href = 'index.html'; }, 1100);
+        })
+        .catch(err => {
+          btn.classList.remove('loading');
+          btn.disabled = false;
+          showToast(err.message || 'Login failed. Check your email and password.', 'error');
+        });
     }
-
-    function guestLogin() {
-  localStorage.setItem('lifereset_user', 'guest');
-  showToast('⚡ Entering as Guest Warrior…', 'success');
-  setTimeout(() => { window.location.href = 'index.html'; }, 1200);
-}
 
     /* ── Enter key submit ── */
     document.getElementById('password').addEventListener('keydown', e => {
