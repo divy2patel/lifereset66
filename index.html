@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+  // Redirect to login if not logged in
+  if (!localStorage.getItem('lifereset_user')) {
+    window.location.replace('login.html');
+  }
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="LifeReset66 - A premium, gamified 66-day habit tracker. Build discipline, earn XP, level up, and unlock motivational cards with a dark RPG theme.">
