@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
-  // Redirect to login if not logged in
-  if (!localStorage.getItem('lifereset_user')) {
-    window.location.replace('login.html');
-  }
-</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="LifeReset66 - A premium, gamified 66-day habit tracker. Build discipline, earn XP, level up, and unlock motivational cards with a dark RPG theme.">
   <meta name="theme-color" content="#0a0e1a">
   <title>LifeReset66 — Gamified Habit Tracker & 66-Day Challenge</title>
-  <!-- LOGIN PAGE -->
-  <a href="login.html">Login</a>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/styles.css">
   
@@ -83,10 +78,11 @@
       gap: 0.25rem;
     }
     .home-day-title {
-      font-family: 'Orbitron', sans-serif;
+      font-family: 'Cinzel', serif;
       font-weight: 700;
       font-size: var(--fs-xl);
       color: var(--text-primary);
+      letter-spacing: 0.03em;
     }
     .home-day-desc {
       font-size: var(--fs-xs);
@@ -196,6 +192,8 @@
   </style>
 </head>
 <body>
+
+  <div class="bg-particles" id="bg-particles" aria-hidden="true"></div>
 
   <!-- App Wrapper Shell -->
   <div class="app-container">
@@ -411,6 +409,23 @@
   <script src="js/timer.js"></script>
   <script src="js/onboarding.js"></script>
   <script src="js/app.js"></script>
+
+  <script>
+    (function initParticles() {
+      const container = document.getElementById('bg-particles');
+      if (!container) return;
+      for (let i = 0; i < 22; i++) {
+        const p = document.createElement('div');
+        p.className = 'ember-particle';
+        const size = 1.5 + Math.random() * 2;
+        p.style.setProperty('--x', Math.random() * 100 + 'vw');
+        p.style.setProperty('--dur', (6 + Math.random() * 8) + 's');
+        p.style.setProperty('--delay', (Math.random() * 10) + 's');
+        p.style.width = p.style.height = size + 'px';
+        container.appendChild(p);
+      }
+    })();
+  </script>
 
 </body>
 </html>
