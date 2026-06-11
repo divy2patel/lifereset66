@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeReset66 — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #f0c860;
+      --gold-dim: #7a5e2a;
+      --red: #b33030;
+      --red-glow: #e04040;
+      --bg-dark: #0a0e1a;
+      --bg-card: rgba(10, 14, 30, 0.88);
+      --border-gold: rgba(201, 168, 76, 0.4);
+      --border-gold-hover: rgba(201, 168, 76, 0.85);
+      --text-primary: #f0e6c8;
+      --text-muted: #8a7a5a;
+      --input-bg: rgba(255,255,255,0.04);
+      --input-border: rgba(201, 168, 76, 0.25);
+      --input-focus: rgba(201, 168, 76, 0.6);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-dark);
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ── Background ───────────────────────────────────────── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(10,14,26,0.72) 0%, rgba(10,14,26,0.55) 40%, rgba(10,14,26,0.88) 100%),
+        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1400&q=80') center/cover no-repeat;
+      z-index: 0;
+    }
+
+    /* animated ember particles */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      bottom: -10px;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      opacity: 0;
+      animation: rise var(--dur) ease-in infinite;
+      animation-delay: var(--delay);
+      left: var(--x);
+    }
+    @keyframes rise {
+      0%   { transform: translateY(0) scale(1);   opacity: 0; }
+      15%  { opacity: 0.7; }
+      80%  { opacity: 0.2; }
+      100% { transform: translateY(-100vh) scale(0.3); opacity: 0; }
+    }
+
+    /* ── Page wrapper ─────────────────────────────────────── */
+    .page {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* ── Logo / Title ─────────────────────────────────────── */
+    .logo-area {
+      text-align: center;
+      margin-bottom: 2.4rem;
+    }
+    .logo-icon {
+      font-size: 3.2rem;
+      line-height: 1;
+      display: block;
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 0 12px rgba(201,168,76,0.5));
+      animation: pulse-icon 3s ease-in-out infinite;
+    }
+    @keyframes pulse-icon {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
+      50%       { filter: drop-shadow(0 0 20px rgba(201,168,76,0.8)); }
+    }
+    .logo-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 60%, #8a6020 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+
+    /* ── Card ─────────────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: 4px;
+      padding: 2.4rem 2.2rem;
+      position: relative;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    /* corner accents */
+    .card::before, .card::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: var(--gold);
+      border-style: solid;
+    }
+    .card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .card::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+    .card-inner-corner-tr, .card-inner-corner-bl {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: var(--gold);
+      border-style: solid;
+    }
+    .card-inner-corner-tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+    .card-inner-corner-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+
+    .card-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 1.8rem;
+      text-transform: uppercase;
+    }
+
+    /* ── Avatar upload circle ─────────────────────────────── */
+    .avatar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.8rem;
+    }
+    .avatar-circle {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      border: 2px solid var(--border-gold);
+      background: rgba(201,168,76,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+    .avatar-circle:hover { border-color: var(--gold); }
+    .avatar-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+      border-radius: 50%;
+    }
+    .avatar-icon {
+      font-size: 2.4rem;
+      opacity: 0.55;
+    }
+    .avatar-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .avatar-circle:hover .avatar-overlay { opacity: 1; }
+    .avatar-overlay span { font-size: 1.3rem; }
+    #avatar-input { display: none; }
+    .avatar-label {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Form ─────────────────────────────────────────────── */
+    .field {
+      margin-bottom: 1.2rem;
+    }
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 0.45rem;
+      font-weight: 600;
+    }
+    .field input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 2px;
+      color: var(--text-primary);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.7rem 1rem;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .field input::placeholder { color: rgba(138,122,90,0.5); }
+    .field input:focus {
+      border-color: var(--input-focus);
+      background: rgba(201,168,76,0.06);
+    }
+
+    /* password wrapper */
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 3rem; }
+    .pw-toggle {
+      position: absolute;
+      right: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .pw-toggle:hover { color: var(--gold); }
+
+    /* ── Submit button ────────────────────────────────────── */
+    .btn-enter {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.85rem 1rem;
+      background: linear-gradient(135deg, #8a5e1a 0%, var(--gold) 50%, #8a5e1a 100%);
+      background-size: 200% 100%;
+      border: none;
+      border-radius: 2px;
+      color: #0a0e1a;
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-position 0.4s, transform 0.15s, box-shadow 0.3s;
+      box-shadow: 0 0 0 rgba(201,168,76,0);
+    }
+    .btn-enter:hover {
+      background-position: 100% 0;
+      box-shadow: 0 0 22px rgba(201,168,76,0.35);
+      transform: translateY(-1px);
+    }
+    .btn-enter:active { transform: translateY(0); }
+
+    /* ── Divider ──────────────────────────────────────────── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.4rem 0;
+    }
+    .divider span { flex: 1; height: 1px; background: var(--border-gold); }
+    .divider p { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.12em; white-space: nowrap; }
+
+    /* ── Links ────────────────────────────────────────────── */
+    .links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.2rem;
+    }
+    .links a {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .links a:hover { color: var(--gold); }
+
+    .register-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .register-link a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .register-link a:hover { color: var(--gold-light); }
+
+    /* ── XP streak badge ──────────────────────────────────── */
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid var(--border-gold);
+      border-radius: 2px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.75rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      color: rgba(138,122,90,0.4);
+      letter-spacing: 0.12em;
+    }
+
+    /* ── Error / success toast ────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(4rem);
+      background: rgba(10,14,26,0.95);
+      border: 1px solid var(--border-gold);
+      border-radius: 3px;
+      padding: 0.7rem 1.4rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: var(--text-primary);
+      z-index: 100;
+      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.error { border-color: rgba(176,48,48,0.6); color: #e07070; }
+    .toast.success { border-color: rgba(201,168,76,0.6); color: var(--gold-light); }
+
+    /* loading spinner on button */
+    .btn-enter .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(10,14,26,0.3);
+      border-top-color: #0a0e1a;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: -3px;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-enter.loading .spinner { display: inline-block; }
+    .btn-enter.loading .btn-text { opacity: 0.7; }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg-layer"></div>
+
+  <!-- Ember particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="page">
+
+    <!-- Logo area -->
+    <div class="logo-area">
+      <span class="logo-icon">⚔️</span>
+      <div class="logo-title">LifeReset 66</div>
+      <div class="logo-sub">Forge Unbreakable Habits</div>
+    </div>
+
+    <!-- Login card -->
+    <div class="card">
+      <div class="card-inner-corner-tr"></div>
+      <div class="card-inner-corner-bl"></div>
+
+      <div style="text-align:center;margin-bottom:0.6rem;">
+        <div class="streak-badge">⚡ 66-Day Challenge</div>
+      </div>
+
+      <div class="card-title">Enter the Arena</div>
+
+      <!-- Avatar upload -->
+      <div class="avatar-wrap">
+        <div class="avatar-circle" id="avatar-btn" title="Upload profile image">
+          <img id="avatar-preview" alt="Profile" />
+          <span class="avatar-icon">🧑</span>
+          <div class="avatar-overlay"><span>📷</span></div>
+        </div>
+        <input type="file" id="avatar-input" accept="image/*" />
+        <span class="avatar-label">Warrior Profile</span>
+      </div>
+
+      <!-- Form -->
+      <div class="field">
+        <label for="email">Warrior Email</label>
+        <input type="email" id="email" placeholder="your@email.com" autocomplete="email" />
+      </div>
+
+      <div class="field">
+        <label for="password">Secret Passphrase</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+          <button class="pw-toggle" id="pw-toggle" aria-label="Toggle password visibility">👁</button>
+        </div>
+      </div>
+
+      <button class="btn-enter" id="login-btn" onclick="handleLogin()">
+        <span class="spinner" id="spinner"></span>
+        <span class="btn-text">Begin Quest</span>
+      </button>
+
+      <div class="links">
+        <a href="#">Forgot Passphrase?</a>
+        <a href="index.html">← Back to Camp</a>
+      </div>
+
+      <div class="divider">
+        <span></span>
+        <p>or continue as</p>
+        <span></span>
+      </div>
+
+      <button class="btn-enter" style="background:rgba(255,255,255,0.05);color:var(--text-primary);font-family:'Rajdhani',sans-serif;font-size:0.9rem;letter-spacing:0.1em;font-weight:600;border:1px solid var(--border-gold);" onclick="guestLogin()">
+        ⚔️ &nbsp;Enter as Guest Warrior
+      </button>
+
+      <div class="register-link">
+        New to the realm? <a href="#">Create Your Legend</a>
+      </div>
+    </div>
+
+    <div class="footer">LifeReset66 &nbsp;·&nbsp; Build Discipline. Earn XP. Level Up.</div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ── Particles ── */
+    const pc = document.getElementById('particles');
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.setProperty('--x', Math.random() * 100 + 'vw');
+      p.style.setProperty('--dur', (6 + Math.random() * 8) + 's');
+      p.style.setProperty('--delay', (Math.random() * 10) + 's');
+      p.style.width = p.style.height = (1.5 + Math.random() * 2) + 'px';
+      pc.appendChild(p);
+    }
+
+    /* ── Password toggle ── */
+    const pwInput = document.getElementById('password');
+    document.getElementById('pw-toggle').addEventListener('click', () => {
+      const isText = pwInput.type === 'text';
+      pwInput.type = isText ? 'password' : 'text';
+      document.getElementById('pw-toggle').textContent = isText ? '👁' : '🙈';
+    });
+
+    /* ── Avatar upload ── */
+    document.getElementById('avatar-btn').addEventListener('click', () => {
+      document.getElementById('avatar-input').click();
+    });
+    document.getElementById('avatar-input').addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.getElementById('avatar-preview');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.querySelector('.avatar-icon').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    /* ── Toast ── */
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast ' + type;
+      void t.offsetWidth;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    /* ── Login logic ── */
+    function handleLogin() {
+      const email = document.getElementById('email').value.trim();
+      const pw    = document.getElementById('password').value;
+      const btn   = document.getElementById('login-btn');
+
+      if (!email) { showToast('⚠️ Enter your warrior email', 'error'); return; }
+      if (!pw)    { showToast('⚠️ Enter your passphrase', 'error'); return; }
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        showToast('⚔️ Welcome back, Warrior!', 'success');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+      }, 1600);
+    }
+
+    function guestLogin() {
+      showToast('⚡ Entering as Guest Warrior…', 'success');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+    }
+
+    /* ── Enter key submit ── */
+    document.getElementById('password').addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+</body>
+</html>
