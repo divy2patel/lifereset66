@@ -57,14 +57,19 @@
       startApp();
     };
 
+    // ====== AUTH CHECK - REDIRECT TO LOGIN IF NOT AUTHENTICATED ======
     if (window.Firebase && Firebase.onAuthStateChanged) {
       Firebase.onAuthStateChanged(user => {
-        if (!user) return;
+        if (!user) {
+          // No user logged in - redirect to login page
+          window.location.href = 'login.html';
+          return;
+        }
         initializeWithFirebase(user);
       });
     } else {
-      Store.init();
-      startApp();
+      // Firebase not available - redirect to login
+      window.location.href = 'login.html';
     }
   });
 
