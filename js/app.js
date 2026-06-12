@@ -61,15 +61,15 @@
     if (window.Firebase && Firebase.onAuthStateChanged) {
       Firebase.onAuthStateChanged(user => {
         if (!user) {
-          // No user logged in - redirect to login page
-          window.location.href = 'login.html';
+          console.warn('[Auth] No authenticated user detected. Redirecting to login.');
+          window.location.replace('login.html');
           return;
         }
         initializeWithFirebase(user);
       });
     } else {
       // Firebase not available - redirect to login
-      window.location.href = 'login.html';
+      window.location.replace('login.html');
     }
   });
 
